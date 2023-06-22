@@ -1,0 +1,46 @@
+name: Render Deployment
+
+on:
+  push:
+    branches:
+      - main # Update this if your main branch has a different name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: birehananteneh/hfc:latest
+
+      - name: Deploy to Render
+        run: |
+          curl -X POST https://api.render.com/v1/services \
+            -H "Authorization: Bearer ${{ secrets.RENDER_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "service": {
+                "gitRepo": {
+                  "repo": "https://github.com/birehan/Hope-For-Children-Backend",
+                  "branch": "main"
+                },
+                "buildCommand": "docker build -t birehananteneh/hfc:latest .",
+                "startCommand": "docker run -p 8080:80 birehananteneh/hfc:latest"
+              }
+            }'
