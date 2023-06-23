@@ -3,6 +3,7 @@ using Application.Contracts.Infrastructure;
 using Application.Interfaces;
 using Application.Models;
 using Application.Responses;
+using Infrastructure.Files;
 using Infrastructure.Mail;
 using Infrastructure.Photos;
 using Infrastructure.Security;
@@ -46,6 +47,8 @@ namespace API.Extensions
             services.AddHttpContextAccessor();
 
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<IFileAccessor, FileAccessor>();
+
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
 

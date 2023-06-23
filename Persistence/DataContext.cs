@@ -39,6 +39,21 @@ namespace Persistence
                 .WithOne(x => x.Alumni)
                 .HasForeignKey<Photo>(s => s.AlumniId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // the relationship between Project and Photo
+            modelBuilder.Entity<Project>()
+                .HasOne(s => s.Photo)
+                .WithOne(x => x.Project)
+                .HasForeignKey<Photo>(s => s.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            // the relationship between Project and File
+            modelBuilder.Entity<Project>()
+                .HasOne(s => s.ProjectFile)
+                .WithOne(x => x.Project)
+                .HasForeignKey<ProjectFile>(s => s.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -59,8 +74,10 @@ namespace Persistence
         }
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Photo> Photos { get; set; }
-
         public DbSet<Alumni> Alumnis { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectFile> ProjectFiles { get; set; }
+
 
 
     }

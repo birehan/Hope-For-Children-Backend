@@ -1,5 +1,5 @@
-using Application.Photos;
 using Microsoft.AspNetCore.Http;
+using Application.Responses;
 
 namespace Application.Interfaces
 {

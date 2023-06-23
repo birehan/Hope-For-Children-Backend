@@ -11,6 +11,8 @@ namespace Persistence.Repositories
         private IStaffRepository _staffRepository;
 
         private IAlumniRepository _alumniRepository;
+        private IProjectRepository _projectRepository;
+
 
 
 
@@ -31,6 +33,11 @@ namespace Persistence.Repositories
         public IAlumniRepository AlumniRepository
         {
             get { return _alumniRepository ??= new AlumniRepository(_context); }
+        }
+
+        public IProjectRepository ProjectRepository
+        {
+            get { return _projectRepository ??= new ProjectRepository(_context); }
         }
 
         public void Dispose()
