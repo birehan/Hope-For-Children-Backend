@@ -33,10 +33,12 @@ namespace Persistence
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-
-
-
-
+            // the relationship between Alumni and Photo
+            modelBuilder.Entity<Alumni>()
+                .HasOne(s => s.Photo)
+                .WithOne(x => x.Alumni)
+                .HasForeignKey<Photo>(s => s.AlumniId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -57,6 +59,9 @@ namespace Persistence
         }
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Photo> Photos { get; set; }
+
+        public DbSet<Alumni> Alumnis { get; set; }
+
 
     }
 }

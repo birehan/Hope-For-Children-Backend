@@ -6,9 +6,13 @@ namespace Domain
 
         public string Url { get; set; }
 
-        public Guid StaffId { get; set; }
+        public Guid? StaffId { get; set; }
 
-        public Staff Staff { get; set; }
+        public Staff? Staff { get; set; }
+
+        public Guid? AlumniId { get; set; }
+
+        public Alumni? Alumni { get; set; }
 
 
     }
