@@ -6,9 +6,6 @@ using AutoMapper;
 using Application.Interfaces;
 using HFC.Application.Features.Staffs.DTOs.Validators;
 using Domain;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using static Domain.Staff;
 
 namespace Application.Features.Staffs.CQRS.Commands

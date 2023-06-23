@@ -7,6 +7,7 @@ namespace Application.Contracts.Persistence
 
         IStaffRepository StaffRepository{get;} 
 
+        IAlumniRepository AlumniRepository{get;} 
 
         
         Task<int> Save();

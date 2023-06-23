@@ -1,6 +1,5 @@
 using API.Controllers;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.Features.Staffs.CQRS.Commands;
 using Application.Features.Staffs.CQRS.Queries;
@@ -22,7 +21,12 @@ namespace StaffsManagement.API.Controllers
         {
             return HandleResult(await _mediator.Send(new GetStaffListQuery()));
         }
-        // Console.WriteLine("I am here Post Create staff API");
+
+        [HttpGet("sector")]
+        public async Task<ActionResult<List<StaffDto>>> GetSectorStaffs(string sector)
+        {
+            return HandleResult(await _mediator.Send(new GetStaffOfSectorListQuery { Sector = sector }));
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] CreateStaffDto createTask)
@@ -31,14 +35,6 @@ namespace StaffsManagement.API.Controllers
             var command = new CreateStaffCommand { StaffDto = createTask };
             return HandleResult(await _mediator.Send(command));
         }
-
-        // [HttpPut("update-photo")]
-        // public async Task<IActionResult> Put([FromForm] Guid Id, IFormFile File)
-        // {
-
-        //     var command = new UpdateStaffPhotoCommand { Id = Id, File = File };
-        //     return HandleResult(await _mediator.Send(command));
-        // }
 
         [HttpPut]
         public async Task<IActionResult> Put([FromForm] UpdateStaffDto updateStaffDto)
@@ -54,30 +50,5 @@ namespace StaffsManagement.API.Controllers
             var command = new DeleteStaffCommand { Id = id };
             return HandleResult(await _mediator.Send(command));
         }
-
-
-        // [Authorize(Policy = "IsTaskCreator")]
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> Put([FromBody] UpdateTaskDto taskDto, int id)
-        // {
-        //     taskDto.Id = id;
-        //     var command = new UpdateTaskCommand { TaskDto = taskDto };
-        //     return HandleResult(await _mediator.Send(command));
-        // }
-
-        // [Authorize(Policy = "IsTaskCreator")]
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> Delete(int id)
-        // {
-        //     var command = new DeleteTaskCommand { Id = id };
-        //     return HandleResult(await _mediator.Send(command));
-        // }
-
-        // [HttpGet("{id}")]
-        // public async Task<IActionResult> Get(int id)
-        // {
-        //     return HandleResult(await _mediator.Send(new GetTaskDetailQuery { Id = id }));
-        // }
-
     }
 }
