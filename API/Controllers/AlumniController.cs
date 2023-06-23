@@ -30,10 +30,10 @@ namespace AlumnisManagement.API.Controllers
             return HandleResult(await _mediator.Send(command));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromForm] UpdateAlumniDto updateAlumniDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put([FromForm] UpdateAlumniDto updateAlumniDto, Guid id)
         {
-
+            updateAlumniDto.Id = id;
             var command = new UpdateAlumniCommand { AlumniDto = updateAlumniDto };
             return HandleResult(await _mediator.Send(command));
         }

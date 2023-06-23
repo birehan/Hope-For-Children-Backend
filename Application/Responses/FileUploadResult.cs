@@ -1,10 +1,8 @@
-namespace Application.Photos
+namespace Application.Responses
 {
-    public class PhotoUploadResult
+    public class FileUploadResult
     {
         public string PublicId { get; set; }
-
         public string Url { get; set; }
-
     }
 }

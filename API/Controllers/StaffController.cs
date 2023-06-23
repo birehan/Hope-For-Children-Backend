@@ -36,10 +36,10 @@ namespace StaffsManagement.API.Controllers
             return HandleResult(await _mediator.Send(command));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromForm] UpdateStaffDto updateStaffDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put([FromForm] UpdateStaffDto updateStaffDto, Guid id)
         {
-
+            updateStaffDto.Id = id;
             var command = new UpdateStaffCommand { StaffDto = updateStaffDto };
             return HandleResult(await _mediator.Send(command));
         }

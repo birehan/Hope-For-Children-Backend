@@ -2,36 +2,37 @@ using Application.Interfaces;
 using Application.Responses;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Infrastructure.Photos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-namespace Infrastructure.Photos
+
+namespace Infrastructure.Files
 {
-    public class PhotoAccessor : IPhotoAccessor
+    public class FileAccessor : IFileAccessor
     {
         private readonly Cloudinary _cloudinary;
 
-        public PhotoAccessor(IOptions<CloudinarySettings> config)
+        public FileAccessor(IOptions<CloudinarySettings> config)
         {
             var account = new Account(
-             config.Value.CloudName,
-             config.Value.ApiKey,
-             config.Value.ApiSecret
+                config.Value.CloudName,
+                config.Value.ApiKey,
+                config.Value.ApiSecret
             );
 
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<PhotoUploadResult> AddPhoto(IFormFile file)
+        public async Task<FileUploadResult> UploadFile(IFormFile file)
         {
             try
             {
                 if (file.Length > 0)
                 {
                     await using var stream = file.OpenReadStream();
-                    var uploadParams = new ImageUploadParams
+                    var uploadParams = new RawUploadParams
                     {
-                        File = new FileDescription(file.FileName, stream),
-                        Transformation = new Transformation().Height(500).Width(500).Crop("fill")
+                        File = new FileDescription(file.FileName, stream)
                     };
 
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -40,7 +41,7 @@ namespace Infrastructure.Photos
                         return null;
                     }
 
-                    return new PhotoUploadResult
+                    return new FileUploadResult
                     {
                         PublicId = uploadResult.PublicId,
                         Url = uploadResult.SecureUrl.ToString()
@@ -55,7 +56,7 @@ namespace Infrastructure.Photos
             }
         }
 
-        public async Task<string> DeletePhoto(string publicId)
+        public async Task<string> DeleteFile(string publicId)
         {
             try
             {
@@ -70,16 +71,16 @@ namespace Infrastructure.Photos
             }
         }
 
-        public async Task<PhotoUploadResult> UpdatePhoto(IFormFile file, string existingPublicId)
+        public async Task<FileUploadResult> UpdateFile(IFormFile file, string existingPublicId)
         {
             try
             {
                 if (!string.IsNullOrEmpty(existingPublicId))
                 {
-                    await DeletePhoto(existingPublicId);
+                    await DeleteFile(existingPublicId);
                 }
 
-                return await AddPhoto(file);
+                return await UploadFile(file);
             }
             catch (Exception ex)
             {

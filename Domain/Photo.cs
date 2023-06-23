@@ -14,6 +14,9 @@ namespace Domain
 
         public Alumni? Alumni { get; set; }
 
+        public Guid? ProjectId { get; set; }
+
+        public Project? Project { get; set; }
 
     }
 }
