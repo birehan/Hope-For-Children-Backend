@@ -28,8 +28,8 @@ namespace Persistence
             // the relationship between Staff and Photo
             modelBuilder.Entity<Staff>()
                 .HasOne(s => s.Photo)
-                .WithOne(x => x.Staff)
-                .HasForeignKey<Photo>(s => s.StaffId)
+                .WithOne()
+                .HasForeignKey<Staff>(s => s.PhotoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -53,6 +53,9 @@ namespace Persistence
                 .HasOne(s => s.ProjectFile)
                 .WithOne(x => x.Project)
                 .HasForeignKey<ProjectFile>(s => s.ProjectId)
+            modelBuilder.Entity<SubCategory>()
+                .HasMany(s => s.Photos)
+                .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
@@ -79,6 +82,8 @@ namespace Persistence
         public DbSet<ProjectFile> ProjectFiles { get; set; }
 
 
+        public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
     }
 }

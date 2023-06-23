@@ -10,8 +10,8 @@ namespace Persistence.Repositories
         {
             string environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                 .SetBasePath(Directory.GetCurrentDirectory())
+             IConfigurationRoot configuration = new ConfigurationBuilder()
+                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../API"))
                  .AddJsonFile("appsettings.json")
                  .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
                  .Build();
