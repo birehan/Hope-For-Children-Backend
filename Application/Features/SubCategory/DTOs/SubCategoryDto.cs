@@ -1,5 +1,4 @@
 using Application.Features.Common;
-using Application.Photos;
 using Domain;
 
 namespace Application.Features.SubCategories.DTOs

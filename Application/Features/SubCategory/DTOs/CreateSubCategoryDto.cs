@@ -1,4 +1,3 @@
-using Application.Photos;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.SubCategories.DTOs
