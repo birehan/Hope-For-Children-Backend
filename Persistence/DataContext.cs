@@ -52,7 +52,8 @@ namespace Persistence
             modelBuilder.Entity<Project>()
                 .HasOne(s => s.ProjectFile)
                 .WithOne(x => x.Project)
-                .HasForeignKey<ProjectFile>(s => s.ProjectId)
+                .HasForeignKey<ProjectFile>(s => s.ProjectId);
+
             modelBuilder.Entity<SubCategory>()
                 .HasMany(s => s.Photos)
                 .WithOne()
@@ -80,8 +81,6 @@ namespace Persistence
         public DbSet<Alumni> Alumnis { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectFile> ProjectFiles { get; set; }
-
-
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
 

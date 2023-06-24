@@ -74,7 +74,22 @@ namespace Application.Features.SubCategories.CQRS.Commands
             }
             else
             {
+                var existingCategory = await _unitOfWork.CategoryRepository.GetByTitleAsync(request.SubCategoryDto.CategoryTitle);
+                var categoryId = new Guid();
+
+                if (existingCategory != null)
+                {
+                    categoryId = existingCategory.Id;
+                }
+                else
+                {
+                    var category = new Category { Title = request.SubCategoryDto.CategoryTitle };
+                    await _unitOfWork.CategoryRepository.Add(category);
+                    categoryId = category.Id;
+                }
+
                 var subCategory = _mapper.Map<SubCategory>(request.SubCategoryDto);
+                subCategory.CategoryId = categoryId;
 
                 var mainPhotoResult = await _photoAccessor.AddPhoto(request.SubCategoryDto.MainPhoto);
                 if (mainPhotoResult == null)

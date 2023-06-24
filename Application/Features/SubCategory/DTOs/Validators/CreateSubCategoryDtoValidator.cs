@@ -8,6 +8,10 @@ namespace Application.Features.SubCategories.DTOs.Validators
         public CreateCategoryDtoValidator()
         {
             Include(new ISubCategoryDtoValidator());
+            RuleFor(p => p.CategoryTitle)
+                .NotEmpty().WithMessage("{PropertyName} is required.")
+                .NotNull();
+
             RuleFor(p => p.MainPhoto)
                 .Must(BeValidFile).WithMessage("{PropertyName} must be a valid File file");
 

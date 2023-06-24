@@ -26,12 +26,24 @@ namespace Application.Features.SubCategories.CQRS.Commands
 
         public async Task<Result<Unit>> Handle(DeleteSubCategoryCommand request, CancellationToken cancellationToken)
         {
-            var subCategory = await _unitOfWork.SubCategoryRepository.Get(request.Id);
+            var subCategory = await _unitOfWork.SubCategoryRepository.GetSubCategoryWithPhotos(request.Id);
 
             if (subCategory == null)
                 return Result<Unit>.Failure("Object doesn't exist");
 
-            var result = _unitOfWork.SubCategoryRepository.Delete(subCategory);
+            if (subCategory.MainPhoto != null)
+            {
+                if (await _photoAccessor.DeletePhoto(subCategory.MainPhoto.Id) == null)
+                    return Result<Unit>.Failure("Error while deleting main photo");
+            }
+
+            foreach(var photo in subCategory.Photos)
+            {
+                if (await _photoAccessor.DeletePhoto(photo.Id) == null)
+                    return Result<Unit>.Failure("Error while deleting Photos");
+            }
+
+            await _unitOfWork.SubCategoryRepository.Delete(subCategory);
 
             if (await _unitOfWork.Save() > 0)
                 return Result<Unit>.Success(Unit.Value);
