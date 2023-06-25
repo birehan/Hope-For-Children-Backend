@@ -6,24 +6,16 @@ namespace Persistence.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DataContext _context;
-
-
         private IStaffRepository _staffRepository;
-
         private IAlumniRepository _alumniRepository;
         private IProjectRepository _projectRepository;
-
-
-
-
+        private ICategoryRepository _categoryRepository;
+        private ISubCategoryRepository _subCategoryRepository;
 
         public UnitOfWork(DataContext context)
         {
             _context = context;
         }
-
-
-
 
         public IStaffRepository StaffRepository
         {
@@ -38,6 +30,22 @@ namespace Persistence.Repositories
         public IProjectRepository ProjectRepository
         {
             get { return _projectRepository ??= new ProjectRepository(_context); }
+        }
+
+        public ICategoryRepository CategoryRepository
+        {
+            get
+            {
+                return _categoryRepository ??= new CategoryRepository(_context);
+            }
+        }
+
+        public ISubCategoryRepository SubCategoryRepository
+        {
+            get
+            {
+                return _subCategoryRepository ??= new SubCategoryRepository(_context);
+            }
         }
 
         public void Dispose()
