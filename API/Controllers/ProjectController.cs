@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Features.Projects.CQRS.Commands;
 using Application.Features.Projects.CQRS.Queries;
 using Application.Features.Projects.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectsManagement.API.Controllers
 {
@@ -16,6 +17,7 @@ namespace ProjectsManagement.API.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<ProjectDto>>> Get()
         {
@@ -24,6 +26,7 @@ namespace ProjectsManagement.API.Controllers
 
 
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

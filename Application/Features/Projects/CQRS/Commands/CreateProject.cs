@@ -60,18 +60,21 @@ namespace Application.Features.Projects.CQRS.Commands
                 };
                 Project.PhotoId = photoUploadResult.PublicId;
 
-
-                var fileUploadResult = await _fileAccessor.UploadFile(request.ProjectDto.PdfFile);
-
-                if (fileUploadResult == null)
-                    return Result<ProjectDto>.Failure("Creation Failed due to file upload error.");
-
-                Project.ProjectFile = new ProjectFile
+                if (request.ProjectDto.PdfFile != null)
                 {
-                    Url = fileUploadResult.Url,
-                    Id = fileUploadResult.PublicId,
-                };
-                Project.ProjectFileId = fileUploadResult.PublicId;
+                    var fileUploadResult = await _fileAccessor.UploadFile(request.ProjectDto.PdfFile);
+
+                    if (fileUploadResult != null)
+                        return Result<ProjectDto>.Failure("Creation Failed due to file upload error.");
+
+                    Project.ProjectFile = new ProjectFile
+                    {
+                        Url = fileUploadResult.Url,
+                        Id = fileUploadResult.PublicId,
+                    };
+                    Project.ProjectFileId = fileUploadResult.PublicId;
+                }
+
 
                 await _unitOfWork.ProjectRepository.Add(Project);
 

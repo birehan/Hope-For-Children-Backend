@@ -12,8 +12,8 @@ namespace Domain
 
         public Photo Photo { get; set; }
 
-        public string ProjectFileId { get; set; }
+        public string? ProjectFileId { get; set; }
 
-        public ProjectFile ProjectFile { get; set; }
+        public ProjectFile? ProjectFile { get; set; }
     }
 }

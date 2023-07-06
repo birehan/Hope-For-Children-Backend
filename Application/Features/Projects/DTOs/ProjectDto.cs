@@ -13,7 +13,7 @@ namespace Application.Features.Projects.DTOs
 
         public string PhotoUrl { get; set; }
 
-        public string FileUrl { get; set; }
+        public string? FileUrl { get; set; }
 
     }
 }
