@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Features.Alumnis.CQRS.Commands;
 using Application.Features.Alumnis.CQRS.Queries;
 using Application.Features.Alumnis.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlumnisManagement.API.Controllers
 {
@@ -16,6 +17,7 @@ namespace AlumnisManagement.API.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<AlumniDto>>> Get()
         {
