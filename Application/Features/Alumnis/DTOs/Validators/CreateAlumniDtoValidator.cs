@@ -22,7 +22,7 @@ namespace HFC.Application.Features.Alumnis.DTOs.Validators
                 return true; // Skip validation if file is not provided
             }
 
-            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
 
             var extension = Path.GetExtension(file.FileName);
             return validExtensions.Contains(extension.ToLower());
