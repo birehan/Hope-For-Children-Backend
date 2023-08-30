@@ -22,8 +22,7 @@ namespace HFC.Application.Features.Staffs.DTOs.Validators
             RuleFor(p => p.About)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
-                .MaximumLength(300).WithMessage("{PropertyName} must not exceed {ComparisonValue} characters.");
-           
+                .MaximumLength(500).WithMessage("{PropertyName} must not exceed {ComparisonValue} characters.");
             RuleFor(p => p.UserSector)
                 .Must(role => Enum.TryParse(typeof(Staff.Sector), role, out _))
                 .WithMessage("Invalid {PropertyName} value!");

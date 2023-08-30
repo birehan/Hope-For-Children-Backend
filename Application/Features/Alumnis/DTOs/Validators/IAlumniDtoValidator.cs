@@ -18,7 +18,7 @@ namespace HFC.Application.Features.Alumnis.DTOs.Validators
                 .NotEmpty()
                 .WithMessage("{PropertyName} is required.")
                 .NotNull()
-                .MaximumLength(500)
+                .MaximumLength(800)
                 .WithMessage("{PropertyName} must not exceed {ComparisonValue} characters.");
         }
 
