@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Features.Staffs.CQRS.Commands;
 using Application.Features.Staffs.CQRS.Queries;
 using Application.Features.Staffs.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StaffsManagement.API.Controllers
 {
@@ -16,12 +17,14 @@ namespace StaffsManagement.API.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<StaffDto>>> Get()
         {
             return HandleResult(await _mediator.Send(new GetStaffListQuery()));
         }
 
+        [AllowAnonymous]
         [HttpGet("sector")]
         public async Task<ActionResult<List<StaffDto>>> GetSectorStaffs(string sector)
         {
