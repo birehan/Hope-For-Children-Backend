@@ -14,9 +14,7 @@ namespace HFC.Application.Features.Projects.DTOs.Validators
                 .Must(BeAValidImage)
                 .WithMessage("{PropertyName} must be a valid image file.");
 
-            RuleFor(p => p.PdfFile)
-               .Must(BeAValidFile)
-               .WithMessage("{PropertyName} must be a valid pdf file and size of less than 3 mega bite.");
+
         }
 
         private bool BeAValidImage(IFormFile file)
@@ -32,21 +30,6 @@ namespace HFC.Application.Features.Projects.DTOs.Validators
             return validExtensions.Contains(extension.ToLower());
         }
 
-        private bool BeAValidFile(IFormFile file)
-        {
-            if (file == null)
-            {
-                return true; // Skip validation if file is not provided
-            }
-
-            var validExtensions = new[] { ".pdf" };
-            var validMaxSize = 3 * 1024 * 1024; // 3MB in bytes
-
-            var extension = Path.GetExtension(file.FileName);
-            var fileSize = file.Length;
-
-            return validExtensions.Contains(extension.ToLower()) && fileSize <= validMaxSize;
-        }
 
     }
 }

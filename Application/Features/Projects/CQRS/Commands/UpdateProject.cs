@@ -20,15 +20,13 @@ namespace Application.Features.Projects.CQRS.Commands
         private readonly IMapper _mapper;
         private readonly IPhotoAccessor _photoAccessor;
 
-        private readonly IFileAccessor _fileAccessor;
 
 
-        public UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IPhotoAccessor photoAccessor, IFileAccessor fileAccessor)
+        public UpdateProjectCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IPhotoAccessor photoAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _photoAccessor = photoAccessor;
-            _fileAccessor = fileAccessor;
         }
 
 
@@ -66,20 +64,7 @@ namespace Application.Features.Projects.CQRS.Commands
                 }
 
 
-                if (request.ProjectDto.PdfFile != null)
-                {
-                    var fileUploadResult = await _fileAccessor.UpdateFile(request.ProjectDto.PdfFile, Project.ProjectFileId);
 
-                    if (fileUploadResult == null)
-                        return Result<ProjectDto>.Failure("Creation Failed");
-
-                    Project.ProjectFile = new ProjectFile
-                    {
-                        Url = fileUploadResult.Url,
-                        Id = fileUploadResult.PublicId
-                    };
-                    Project.ProjectFileId = fileUploadResult.PublicId;
-                }
 
                 _unitOfWork.ProjectRepository.Update(Project);
 

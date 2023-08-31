@@ -25,7 +25,7 @@ namespace Application.Profiles
 
             CreateMap<SubCategory, SubCategoryDto>()
                 .ForMember(dest => dest.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto.Url))
-                .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(p => p.Url ).ToList()));
+                .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(p => p.Url).ToList()));
 
             CreateMap<UpdateSubCategoryDto, SubCategory>()
                 .ForMember(dest => dest.Photos, opt => opt.Ignore())
@@ -41,8 +41,7 @@ namespace Application.Profiles
             CreateMap<CreateProjectDto, Project>().ReverseMap();
             CreateMap<UpdateProjectDto, Project>().ReverseMap();
             CreateMap<Project, ProjectDto>()
-                .ForMember(x => x.PhotoUrl, o => o.MapFrom(s => s.Photo.Url))
-                .ForMember(x => x.FileUrl, o => o.MapFrom(s => s.ProjectFile.Url));
+                .ForMember(x => x.PhotoUrl, o => o.MapFrom(s => s.Photo.Url));
 
 
 

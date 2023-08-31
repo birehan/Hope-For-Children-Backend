@@ -22,16 +22,12 @@ namespace Application.Features.Projects.CQRS.Commands
         private readonly IPhotoAccessor _photoAccessor;
 
 
-        private readonly IFileAccessor _fileAccessor;
 
-
-
-        public CreateProjectCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IPhotoAccessor photoAccessor, IFileAccessor fileAccessor)
+        public CreateProjectCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IPhotoAccessor photoAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _photoAccessor = photoAccessor;
-            _fileAccessor = fileAccessor;
         }
 
         public async Task<Result<ProjectDto>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
@@ -59,21 +55,6 @@ namespace Application.Features.Projects.CQRS.Commands
                     Id = photoUploadResult.PublicId,
                 };
                 Project.PhotoId = photoUploadResult.PublicId;
-
-                if (request.ProjectDto.PdfFile != null)
-                {
-                    var fileUploadResult = await _fileAccessor.UploadFile(request.ProjectDto.PdfFile);
-
-                    if (fileUploadResult != null)
-                        return Result<ProjectDto>.Failure("Creation Failed due to file upload error.");
-
-                    Project.ProjectFile = new ProjectFile
-                    {
-                        Url = fileUploadResult.Url,
-                        Id = fileUploadResult.PublicId,
-                    };
-                    Project.ProjectFileId = fileUploadResult.PublicId;
-                }
 
 
                 await _unitOfWork.ProjectRepository.Add(Project);

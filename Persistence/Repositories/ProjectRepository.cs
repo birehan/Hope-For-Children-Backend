@@ -17,11 +17,11 @@ namespace Persistence.Repositories
 
         public async Task<IReadOnlyList<Project>> GetAll()
         {
-            return await _dbContext.Set<Project>().Include(x => x.Photo).Include(x => x.ProjectFile).AsNoTracking().ToListAsync();
+            return await _dbContext.Set<Project>().Include(x => x.Photo).AsNoTracking().ToListAsync();
         }
         public async Task<Project> Get(Guid id)
         {
-            return await _dbContext.Set<Project>().Include(x => x.Photo).Include(x => x.ProjectFile).FirstOrDefaultAsync(b => b.Id == id);
+            return await _dbContext.Set<Project>().Include(x => x.Photo).FirstOrDefaultAsync(b => b.Id == id);
         }
 
 

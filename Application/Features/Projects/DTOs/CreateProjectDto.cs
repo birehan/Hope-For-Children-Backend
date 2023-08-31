@@ -6,7 +6,7 @@ namespace Application.Features.Projects.DTOs
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public IFormFile? PdfFile { get; set; }
+        public string Content { get; set; }
         public IFormFile ImageFile { get; set; }
 
     }

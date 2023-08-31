@@ -18,12 +18,7 @@ namespace HFC.Application.Features.Projects.DTOs.Validators
                     .WithMessage("{PropertyName} must be a valid image file.");
             });
 
-            When(p => p.PdfFile != null, () =>
-            {
-                RuleFor(p => p.PdfFile)
-                    .Must(BeAValidFile)
-                    .WithMessage("{PropertyName} must be a valid file.");
-            });
+
         }
 
         private bool BeAValidImage(IFormFile file)
@@ -34,19 +29,6 @@ namespace HFC.Application.Features.Projects.DTOs.Validators
             }
 
             var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-
-            var extension = Path.GetExtension(file.FileName);
-            return validExtensions.Contains(extension.ToLower());
-        }
-
-        private bool BeAValidFile(IFormFile file)
-        {
-            if (file == null)
-            {
-                return true; // Skip validation if file is not provided
-            }
-
-            var validExtensions = new[] { ".pdf" };
 
             var extension = Path.GetExtension(file.FileName);
             return validExtensions.Contains(extension.ToLower());

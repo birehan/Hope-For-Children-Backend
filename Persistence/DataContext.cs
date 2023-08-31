@@ -48,11 +48,7 @@ namespace Persistence
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            // the relationship between Project and File
-            modelBuilder.Entity<Project>()
-                .HasOne(s => s.ProjectFile)
-                .WithOne(x => x.Project)
-                .HasForeignKey<ProjectFile>(s => s.ProjectId);
+
 
             modelBuilder.Entity<SubCategory>()
                 .HasMany(s => s.Photos)
@@ -80,7 +76,6 @@ namespace Persistence
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Alumni> Alumnis { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<ProjectFile> ProjectFiles { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
 
