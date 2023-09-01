@@ -11,8 +11,8 @@ namespace Application.Contracts.Persistence
 
         IProjectRepository ProjectRepository { get; }
 
+
         ICategoryRepository CategoryRepository { get; }
-        ISubCategoryRepository SubCategoryRepository { get; }
 
         Task<int> Save();
 

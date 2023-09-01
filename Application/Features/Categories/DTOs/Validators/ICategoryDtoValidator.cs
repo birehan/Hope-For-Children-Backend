@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Features.SubCategories.DTOs.Validators
+namespace Application.Features.Categories.DTOs.Validators
 {
-    public class ISubCategoryDtoValidator : AbstractValidator<ISubCategoryDto>
+    public class ICategoryDtoValidator : AbstractValidator<ICategoryDto>
     {
-        public ISubCategoryDtoValidator()
+        public ICategoryDtoValidator()
         {
             RuleFor(p => p.Title)
                 .NotEmpty().WithMessage("{Property Name} is required")

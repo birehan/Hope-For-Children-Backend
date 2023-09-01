@@ -1,22 +1,22 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Features.SubCategories.DTOs.Validators
+namespace Application.Features.Categories.DTOs.Validators
 {
-    public class CreateCategoryDtoValidator : AbstractValidator<CreateSubCategoryDto>
+    public class CreateCategoryDtoValidator : AbstractValidator<CreateCategoryDto>
     {
         public CreateCategoryDtoValidator()
         {
-            Include(new ISubCategoryDtoValidator());
-            RuleFor(p => p.CategoryTitle)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull();
+            Include(new ICategoryDtoValidator());
+
 
             RuleFor(p => p.MainPhoto)
                 .Must(BeValidFile).WithMessage("{PropertyName} must be a valid File file");
 
             RuleFor(p => p.Photos)
-                .Must(BeValidFiles).WithMessage("{PropertyName} must be a valid images");
+                .Must(BeValidFiles).WithMessage("{PropertyName} must be a valid images")
+                .When(dto => dto.Photos != null && dto.Photos.Any()); // Validation only if Photos is not null and has elements.
+
         }
 
         private bool BeValidFile(IFormFile file)
@@ -32,7 +32,7 @@ namespace Application.Features.SubCategories.DTOs.Validators
 
         private bool BeValidFiles(List<IFormFile> files)
         {
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!BeValidFile(file))
                     return false;

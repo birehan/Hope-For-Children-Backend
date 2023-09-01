@@ -4,7 +4,7 @@ using Domain;
 using Application.Features.Accounts.DTOs;
 using Application.Features.Alumnis.DTOs;
 using Application.Features.Projects.DTOs;
-using Application.Features.SubCategories.DTOs;
+using Application.Features.Categories.DTOs;
 
 namespace Application.Profiles
 {
@@ -18,18 +18,19 @@ namespace Application.Profiles
             CreateMap<Staff, StaffDto>()
             .ForMember(x => x.PhotoUrl, o => o.MapFrom(s => s.Photo.Url));
 
-            CreateMap<CreateSubCategoryDto, SubCategory>()
+            CreateMap<CategoryDto, Category>().ReverseMap();
+            CreateMap<Category, CategoryDetailDto>()
+            .ForMember(
+               dest => dest.Photos,
+               opt => opt.MapFrom(src => src.Photos.Select(photo => photo.Url).ToList()))
+            .ReverseMap();
+
+            CreateMap<CreateCategoryDto, Category>()
                 .ForMember(dest => dest.Photos, opt => opt.Ignore())
-                .ForMember(dest => dest.MainPhoto, opt => opt.Ignore())
                 .ReverseMap();
 
-            CreateMap<SubCategory, SubCategoryDto>()
-                .ForMember(dest => dest.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto.Url))
-                .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos.Select(p => p.Url).ToList()));
-
-            CreateMap<UpdateSubCategoryDto, SubCategory>()
+            CreateMap<UpdateCategoryDto, Category>()
                 .ForMember(dest => dest.Photos, opt => opt.Ignore())
-                .ForMember(dest => dest.MainPhoto, opt => opt.Ignore())
                 .ReverseMap();
 
             CreateMap<CreateAlumniDto, Alumni>().ReverseMap();

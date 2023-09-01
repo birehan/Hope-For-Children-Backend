@@ -50,7 +50,7 @@ namespace Persistence
 
 
 
-            modelBuilder.Entity<SubCategory>()
+            modelBuilder.Entity<Category>()
                 .HasMany(s => s.Photos)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -76,7 +76,6 @@ namespace Persistence
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Alumni> Alumnis { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
 
     }

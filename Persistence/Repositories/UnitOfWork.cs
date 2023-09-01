@@ -10,7 +10,6 @@ namespace Persistence.Repositories
         private IAlumniRepository _alumniRepository;
         private IProjectRepository _projectRepository;
         private ICategoryRepository _categoryRepository;
-        private ISubCategoryRepository _subCategoryRepository;
 
         public UnitOfWork(DataContext context)
         {
@@ -40,13 +39,6 @@ namespace Persistence.Repositories
             }
         }
 
-        public ISubCategoryRepository SubCategoryRepository
-        {
-            get
-            {
-                return _subCategoryRepository ??= new SubCategoryRepository(_context);
-            }
-        }
 
         public void Dispose()
         {
