@@ -65,7 +65,7 @@ namespace API.Extensions
                             .AllowAnyMethod()
                             .AllowCredentials()
                             .AllowAnyHeader()
-                            .WithOrigins("http://localhost:3000"));
+                            .WithOrigins("http://localhost:3000", "https://hopeforchildren.onrender.com"));
             });
 
 
