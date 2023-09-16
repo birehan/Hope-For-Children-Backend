@@ -1,7 +1,7 @@
 
 
 using MediatR;
-using Application.Features.Staff.DTOs;
+using Application.Features.Staffs.DTOs;
 using Application.Responses;
 using Application.Contracts.Persistence;
 using AutoMapper;
