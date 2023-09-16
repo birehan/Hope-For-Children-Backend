@@ -31,6 +31,14 @@ namespace StaffsManagement.API.Controllers
             return HandleResult(await _mediator.Send(new GetStaffOfSectorListQuery { Sector = sector }));
         }
 
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var command = new GetStaffDetailQuery { Id = id };
+            return HandleResult(await _mediator.Send(command));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] CreateStaffDto createTask)
         {
