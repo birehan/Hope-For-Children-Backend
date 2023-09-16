@@ -24,6 +24,17 @@ namespace AlumnisManagement.API.Controllers
             return HandleResult(await _mediator.Send(new GetAlumniListQuery()));
         }
 
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var command = new GetAlumniDetailQuery { Id = id };
+            return HandleResult(await _mediator.Send(command));
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] CreateAlumniDto createTask)
         {
