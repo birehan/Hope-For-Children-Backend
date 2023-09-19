@@ -33,8 +33,21 @@ namespace Application.Features.Categories.CQRS.Commands
 
         public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
+
+            Console.WriteLine("hello wolrd");
+            Console.WriteLine(request.CategoryDto.Title);
+
+
+            foreach(var photoCheck in request.CategoryDto.Photos){
+
+                Console.WriteLine(photoCheck.IsMainPhoto);
+            }
+
+
+            
             var validator = new CreateCategoryDtoValidator();
             var validationResult = await validator.ValidateAsync(request.CategoryDto);
+
 
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(validationResult.Errors[0].ErrorMessage);
