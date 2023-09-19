@@ -20,10 +20,11 @@ namespace Application.Profiles
 
             CreateMap<CategoryDto, Category>().ReverseMap();
             CreateMap<Category, CategoryDetailDto>()
-            .ForMember(
-               dest => dest.Photos,
-               opt => opt.MapFrom(src => src.Photos.Select(photo => photo.Url).ToList()))
             .ReverseMap();
+
+            //   .ForMember(
+            //    dest => dest.Photos,
+            //    opt => opt.MapFrom(src => src.Photos.Select(photo => photo.Url).ToList()))
 
             CreateMap<CreateCategoryDto, Category>()
                 .ForMember(dest => dest.Photos, opt => opt.Ignore())

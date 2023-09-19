@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.Categories.DTOs.Validators
 {
-    public class CreateCategoryDtoValidator : AbstractValidator<CreateCategoryDto>
+    public class UpdateCategoryDtoValidator : AbstractValidator<UpdateCategoryDto>
     {
-        public CreateCategoryDtoValidator()
+        public UpdateCategoryDtoValidator()
         {
             Include(new ICategoryDtoValidator());
         }

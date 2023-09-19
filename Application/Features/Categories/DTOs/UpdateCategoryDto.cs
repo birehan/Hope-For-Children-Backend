@@ -5,8 +5,7 @@ namespace Application.Features.Categories.DTOs
 {
     public class UpdateCategoryDto : BaseDto, ICategoryDto
     {
-        public string? Title { get; set; }
-        public IFormFile? MainPhoto { get; set; }
-        public List<IFormFile>? Photos { get; set; }
+        public string Title { get; set; }
+        public List<GalleryPhotoDto> Photos { get; set; }
     }
 }

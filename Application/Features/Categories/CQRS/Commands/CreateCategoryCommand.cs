@@ -6,6 +6,10 @@ using Application.Responses;
 using AutoMapper;
 using Domain;
 using MediatR;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Features.Categories.CQRS.Commands
 {
@@ -29,38 +33,40 @@ namespace Application.Features.Categories.CQRS.Commands
 
         public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-
-
-
             var validator = new CreateCategoryDtoValidator();
             var validationResult = await validator.ValidateAsync(request.CategoryDto);
 
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(validationResult.Errors[0].ErrorMessage);
 
-
             var category = _mapper.Map<CreateCategoryDto, Category>(request.CategoryDto);
 
-            var mainPhotoResult = await _photoAccessor.AddPhoto(request.CategoryDto.MainPhoto);
-            if (mainPhotoResult == null)
+            if (request.CategoryDto.Photos != null && request.CategoryDto.Photos.Any())
             {
-                return Result<Guid>.Failure("Error uploading main photo");
-            }
-
-            category.MainPhotoUrl = mainPhotoResult.Url;
-            category.Photos.Add(new Photo { Url = mainPhotoResult.Url, Id = mainPhotoResult.PublicId });
-
-            if (request.CategoryDto.Photos != null && request.CategoryDto.Photos.Count > 0)
-            {
-                var photoUploadTasks = request.CategoryDto.Photos.Select(p => _photoAccessor.AddPhoto(p));
-                var photoUploadResults = await Task.WhenAll(photoUploadTasks);
-
-                if (photoUploadResults.Any(r => r == null))
+                foreach (var photoDto in request.CategoryDto.Photos)
                 {
-                    return Result<Guid>.Failure("Error uploading one or more photos");
-                }
+                    var photoUploadResult = await _photoAccessor.AddPhoto(photoDto.File);
 
-                category.Photos.AddRange(photoUploadResults.Select(r => new Photo { Url = r.Url, Id = r.PublicId }));
+                    if (photoUploadResult == null)
+                    {
+                        return Result<Guid>.Failure("Error uploading one or more photos");
+                    }
+
+                    var galleryPhoto = new GalleryPhoto
+                    {
+                        Url = photoUploadResult.Url,
+                        Id = photoUploadResult.PublicId,
+                        IsMainPhoto = photoDto.IsMainPhoto // Set IsMainPhoto based on the value in the DTO
+                    };
+
+                    category.Photos.Add(galleryPhoto);
+
+                    // If the current photo is the main photo, update the main photo URL in the category
+                    if (galleryPhoto.IsMainPhoto)
+                    {
+                        category.MainPhotoUrl = galleryPhoto.Url;
+                    }
+                }
             }
 
             await _unitOfWork.CategoryRepository.Add(category);
