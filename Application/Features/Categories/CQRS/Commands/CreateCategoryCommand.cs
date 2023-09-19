@@ -36,7 +36,7 @@ namespace Application.Features.Categories.CQRS.Commands
 
             Console.WriteLine("hello wolrd");
             Console.WriteLine(request.CategoryDto.Title);
-
+            Console.WriteLine(request.CategoryDto.Photos);
 
             foreach(var photoCheck in request.CategoryDto.Photos){
 
