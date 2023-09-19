@@ -19,9 +19,9 @@ namespace Application.Features.Categories.DTOs.Validators
                 .Must(photo => !IsNullOrWhiteSpace(photo.PhotoUrl) || photo.File != null)
                 .WithMessage("Each photo must have either a File or a PhotoUrl.");
 
-            RuleFor(p => p.Photos)
-                .Must(photos => photos.Count(photo => photo.IsMainPhoto) == 1)
-                .WithMessage("Exactly one photo must have IsMainPhoto set to true.");
+            // RuleFor(p => p.Photos)
+            //     .Must(photos => photos.Count(photo => photo.IsMainPhoto) == 1)
+            //     .WithMessage("Exactly one photo must have IsMainPhoto set to true.");
 
                 
                     
