@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.Categories.DTOs
 {
-    public class GalleryPhotoDto
-    {
-        public bool IsMainPhoto { get; set; }
-        public IFormFile? File { get; set; }
-        public string? PhotoUrl { get; set; }
-    }
+public class GalleryPhotoDto
+{
+    public bool IsMainPhoto { get; set; }
+    public IFormFile? File { get; set; }
+    public string? PhotoUrl { get; set; }
+}
 }
