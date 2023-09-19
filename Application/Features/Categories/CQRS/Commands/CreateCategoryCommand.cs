@@ -11,11 +11,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using System.Text.Json;
+using System.Collections.Generic;
+
 namespace Application.Features.Categories.CQRS.Commands
 {
     public class CreateCategoryCommand : IRequest<Result<Guid>>
     {
-        public CreateCategoryDto CategoryDto { get; set; }
+        public GalleryDto GalleryDto { get; set; }
     }
 
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<Guid>>
@@ -34,30 +37,44 @@ namespace Application.Features.Categories.CQRS.Commands
         public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
 
-            Console.WriteLine("hello wolrd");
-            Console.WriteLine(request.CategoryDto.Title);
-            Console.WriteLine(request.CategoryDto.Photos.Count);
+            List<GalleryPhotoDto> galleryPhotos = null;
+
+                try
+                {
+                    galleryPhotos = JsonSerializer.Deserialize<List<GalleryPhotoDto>>(request.GalleryDto.Photos);
+
+                    // You now have your data in the 'galleryPhotos' variable.
+                    foreach (var photo in galleryPhotos)
+                    {
+                        Console.WriteLine($"IsMainPhoto: {photo.IsMainPhoto}, PhotoUrl: {photo.PhotoUrl}");
+                    }
+                }
+                catch (JsonException e)
+                {
+                    // Handle any JSON parsing errors here.
+                    Console.WriteLine($"JSON parsing error: {e.Message}");
+                }
 
 
-            foreach(var photoCheck in request.CategoryDto.Photos){
-
-                Console.WriteLine(photoCheck.IsMainPhoto);
-            }
-
+            var categoryDto = new CreateCategoryDto
+            {
+                Title = request.GalleryDto.Title,
+                Photos = galleryPhotos
+            };
 
             
             var validator = new CreateCategoryDtoValidator();
-            var validationResult = await validator.ValidateAsync(request.CategoryDto);
+            var validationResult = await validator.ValidateAsync(categoryDto);
 
 
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(validationResult.Errors[0].ErrorMessage);
 
-            var category = _mapper.Map<CreateCategoryDto, Category>(request.CategoryDto);
+            var category = _mapper.Map<CreateCategoryDto, Category>(categoryDto);
 
-            if (request.CategoryDto.Photos != null && request.CategoryDto.Photos.Any())
+            if (categoryDto.Photos != null && categoryDto.Photos.Any())
             {
-                foreach (var photoDto in request.CategoryDto.Photos)
+                foreach (var photoDto in categoryDto.Photos)
                 {
                     var photoUploadResult = await _photoAccessor.AddPhoto(photoDto.File);
 
