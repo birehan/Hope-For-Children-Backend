@@ -19,9 +19,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromForm] GalleryDto GalleryDto)
+        public async Task<IActionResult> CreateCategory([FromForm] CreateCategoryDto CategoryDto)
         {
-            return HandleResult(await _mediator.Send(new CreateCategoryCommand { GalleryDto = GalleryDto }));
+            return HandleResult(await _mediator.Send(new CreateCategoryCommand { CategoryDto = CategoryDto }));
         }
 
         // [HttpPut]

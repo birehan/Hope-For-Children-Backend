@@ -11,14 +11,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using System.Text.Json;
-using System.Collections.Generic;
-
 namespace Application.Features.Categories.CQRS.Commands
 {
     public class CreateCategoryCommand : IRequest<Result<Guid>>
     {
-        public GalleryDto GalleryDto { get; set; }
+        public CreateCategoryDto CategoryDto { get; set; }
     }
 
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<Guid>>
@@ -37,44 +34,21 @@ namespace Application.Features.Categories.CQRS.Commands
         public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
 
-            List<GalleryPhotoDto> galleryPhotos = null;
 
-                try
-                {
-                    galleryPhotos = JsonSerializer.Deserialize<List<GalleryPhotoDto>>(request.GalleryDto.Photos);
-
-                    // You now have your data in the 'galleryPhotos' variable.
-                    foreach (var photo in galleryPhotos)
-                    {
-                        Console.WriteLine($"IsMainPhoto: {photo.IsMainPhoto}, PhotoUrl: {photo.PhotoUrl}");
-                    }
-                }
-                catch (JsonException e)
-                {
-                    // Handle any JSON parsing errors here.
-                    Console.WriteLine($"JSON parsing error: {e.Message}");
-                }
-
-
-            var categoryDto = new CreateCategoryDto
-            {
-                Title = request.GalleryDto.Title,
-                Photos = galleryPhotos
-            };
 
             
             var validator = new CreateCategoryDtoValidator();
-            var validationResult = await validator.ValidateAsync(categoryDto);
+            var validationResult = await validator.ValidateAsync(request.CategoryDto);
 
 
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(validationResult.Errors[0].ErrorMessage);
 
-            var category = _mapper.Map<CreateCategoryDto, Category>(categoryDto);
+            var category = _mapper.Map<CreateCategoryDto, Category>(request.CategoryDto);
 
-            if (categoryDto.Photos != null && categoryDto.Photos.Any())
+            if (request.CategoryDto.Photos != null && request.CategoryDto.Photos.Any())
             {
-                foreach (var photoDto in categoryDto.Photos)
+                foreach (var photoDto in request.CategoryDto.Photos)
                 {
                     var photoUploadResult = await _photoAccessor.AddPhoto(photoDto.File);
 
