@@ -18,17 +18,19 @@ namespace API.Controllers
             _mediator = mediator;
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromForm] CreateCategoryDto CategoryDto)
+        public async Task<IActionResult> CreateCategory([FromForm] GalleryDto GalleryDto)
         {
-            return HandleResult(await _mediator.Send(new CreateCategoryCommand { CategoryDto = CategoryDto }));
+            return HandleResult(await _mediator.Send(new CreateCategoryCommand { GalleryDto = GalleryDto }));
         }
 
-        // [HttpPut]
-        // public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryDto CategoryDto)
-        // {
-        //     return HandleResult(await _mediator.Send(new UpdateCategoryCommand { CategoryDto = CategoryDto }));
-        // }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCategory([FromForm] UpdateGalleryDto GalleryDto, Guid id)
+        {
+            GalleryDto.Id = id;
+            return HandleResult(await _mediator.Send(new UpdateCategoryCommand { GalleryDto = GalleryDto }));
+        }
 
         [HttpGet("{Id}")]
         [AllowAnonymous]
@@ -44,7 +46,7 @@ namespace API.Controllers
             return HandleResult(await _mediator.Send(new GetAllCategoryQuery()));
         }
 
-        [HttpDelete]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteCategory(Guid Id)
         {
             return HandleResult(await _mediator.Send(new DeleteCategoryCommand { Id = Id }));

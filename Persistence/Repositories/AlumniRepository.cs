@@ -24,6 +24,7 @@ namespace Persistence.Repositories
             return await _dbContext.Set<Alumni>().Include(x => x.Photo).FirstOrDefaultAsync(b => b.Id == id);
         }
 
+      
 
     }
 }

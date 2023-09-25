@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Application.Features.Categories.DTOs
 {
     public interface ICategoryDto

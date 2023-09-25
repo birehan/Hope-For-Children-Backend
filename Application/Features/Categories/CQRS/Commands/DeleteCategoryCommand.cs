@@ -6,12 +6,12 @@ using MediatR;
 
 namespace Application.Features.Categories.CQRS.Commands
 {
-    public class DeleteCategoryCommand : IRequest<Result<Unit>>
+    public class DeleteCategoryCommand : IRequest<Result<Guid>>
     {
         public Guid Id { get; set; }
     }
 
-    public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, Result<Unit>>
+    public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, Result<Guid>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -24,25 +24,25 @@ namespace Application.Features.Categories.CQRS.Commands
             _photoAccessor = photoAccessor;
         }
 
-        public async Task<Result<Unit>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
             var Category = await _unitOfWork.CategoryRepository.GetCategoryWithPhotos(request.Id);
 
             if (Category == null)
-                return Result<Unit>.Failure("Object doesn't exist");
+                return Result<Guid>.Failure("Object doesn't exist");
 
             foreach (var photo in Category.Photos)
             {
                 if (await _photoAccessor.DeletePhoto(photo.Id) == null)
-                    return Result<Unit>.Failure("Error while deleting Photos");
+                    return Result<Guid>.Failure("Error while deleting Photos");
             }
 
             await _unitOfWork.CategoryRepository.Delete(Category);
 
             if (await _unitOfWork.Save() > 0)
-                return Result<Unit>.Success(Unit.Value);
+                return Result<Guid>.Success(request.Id);
 
-            return Result<Unit>.Failure("Error while deleting the object");
+            return Result<Guid>.Failure("Error while deleting the object");
         }
     }
 }

@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Categories.CQRS.Commands
 {
-    public class CreateCategoryCommand : IRequest<Result<Guid>>
+    public class CreateCategoryCommand : IRequest<Result<CategoryDto>>
     {
-        public CreateCategoryDto CategoryDto { get; set; }
+        public GalleryDto GalleryDto { get; set; }
     }
 
-    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<Guid>>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<CategoryDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -31,30 +31,44 @@ namespace Application.Features.Categories.CQRS.Commands
             _photoAccessor = photoAccessor;
         }
 
-        public async Task<Result<Guid>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
 
 
 
-            
+            var items = new CreateCategoryDto { Title = request.GalleryDto.Title };
+
+            for (var index = 0; index < request.GalleryDto.Photos.Count; index++)
+            {
+                var galleryPhoto = new GalleryPhotoDto
+                {
+                    File = request.GalleryDto.Photos[index],
+                    IsMainPhoto = index == request.GalleryDto.MainPhotoIndex
+                };
+
+                items.Photos.Add(galleryPhoto);
+            }
+
+
+
             var validator = new CreateCategoryDtoValidator();
-            var validationResult = await validator.ValidateAsync(request.CategoryDto);
+            var validationResult = await validator.ValidateAsync(items);
 
 
             if (!validationResult.IsValid)
-                return Result<Guid>.Failure(validationResult.Errors[0].ErrorMessage);
+                return Result<CategoryDto>.Failure(validationResult.Errors[0].ErrorMessage);
 
-            var category = _mapper.Map<CreateCategoryDto, Category>(request.CategoryDto);
+            var category = _mapper.Map<CreateCategoryDto, Category>(items);
 
-            if (request.CategoryDto.Photos != null && request.CategoryDto.Photos.Any())
+            if (items.Photos != null && items.Photos.Any())
             {
-                foreach (var photoDto in request.CategoryDto.Photos)
+                foreach (var photoDto in items.Photos)
                 {
                     var photoUploadResult = await _photoAccessor.AddPhoto(photoDto.File);
 
                     if (photoUploadResult == null)
                     {
-                        return Result<Guid>.Failure("Error uploading one or more photos");
+                        return Result<CategoryDto>.Failure("Error uploading one or more photos");
                     }
 
                     var galleryPhoto = new GalleryPhoto
@@ -78,10 +92,10 @@ namespace Application.Features.Categories.CQRS.Commands
 
             if (await _unitOfWork.Save() > 0)
             {
-                return Result<Guid>.Success(category.Id);
+                return Result<CategoryDto>.Success(_mapper.Map<CategoryDto>(category));
             }
 
-            return Result<Guid>.Failure("Error while saving changes");
+            return Result<CategoryDto>.Failure("Error while saving changes");
         }
     }
 }

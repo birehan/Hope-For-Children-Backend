@@ -52,6 +52,9 @@ namespace Application.Features.Alumnis.CQRS.Commands
                     if (photoUploadResult == null)
                         return Result<AlumniDto>.Failure("Creation Failed");
 
+
+
+
                     Alumni.Photo = new Photo
                     {
                         Url = photoUploadResult.Url,
@@ -60,10 +63,14 @@ namespace Application.Features.Alumnis.CQRS.Commands
                     Alumni.PhotoId = photoUploadResult.PublicId;
                 }
 
+                var sample = _mapper.Map<AlumniDto>(Alumni);
+
                 _unitOfWork.AlumniRepository.Update(Alumni);
 
                 if (await _unitOfWork.Save() > 0)
-                    return Result<AlumniDto>.Success(_mapper.Map<AlumniDto>(Alumni));
+                {
+                    return Result<AlumniDto>.Success(sample);
+                }
 
                 return Result<AlumniDto>.Failure("Update failed");
             }
