@@ -10,7 +10,7 @@ namespace HFC.Application.Features.Projects.DTOs.Validators
         {
             Include(new IProjectDtoValidator());
 
-            RuleFor(p => p.ImageFile)
+            RuleFor(p => p.File)
                 .Must(BeAValidImage)
                 .WithMessage("{PropertyName} must be a valid image file.");
 

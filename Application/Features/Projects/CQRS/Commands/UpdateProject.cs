@@ -34,6 +34,7 @@ namespace Application.Features.Projects.CQRS.Commands
         {
             try
             {
+
                 var validator = new UpdateProjectDtoValidator();
                 var validationResult = await validator.ValidateAsync(request.ProjectDto);
 
@@ -48,9 +49,9 @@ namespace Application.Features.Projects.CQRS.Commands
                 Project.Title = request.ProjectDto.Title;
                 Project.Description = request.ProjectDto.Description;
 
-                if (request.ProjectDto.ImageFile != null)
+                if (request.ProjectDto.File != null)
                 {
-                    var photoUploadResult = await _photoAccessor.UpdatePhoto(request.ProjectDto.ImageFile, Project.PhotoId);
+                    var photoUploadResult = await _photoAccessor.UpdatePhoto(request.ProjectDto.File, Project.PhotoId);
 
                     if (photoUploadResult == null)
                         return Result<ProjectDto>.Failure("Creation Failed");
@@ -62,14 +63,12 @@ namespace Application.Features.Projects.CQRS.Commands
                     };
                     Project.PhotoId = photoUploadResult.PublicId;
                 }
-
-
-
+                var sample = _mapper.Map<ProjectDto>(Project);
 
                 _unitOfWork.ProjectRepository.Update(Project);
 
                 if (await _unitOfWork.Save() > 0)
-                    return Result<ProjectDto>.Success(_mapper.Map<ProjectDto>(Project));
+                    return Result<ProjectDto>.Success(sample);
 
                 return Result<ProjectDto>.Failure("Update failed");
             }

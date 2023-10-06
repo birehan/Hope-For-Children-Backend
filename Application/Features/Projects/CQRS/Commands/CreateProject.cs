@@ -44,7 +44,7 @@ namespace Application.Features.Projects.CQRS.Commands
 
 
                 var Project = _mapper.Map<Project>(request.ProjectDto);
-                var photoUploadResult = await _photoAccessor.AddPhoto(request.ProjectDto.ImageFile);
+                var photoUploadResult = await _photoAccessor.AddPhoto(request.ProjectDto.File);
 
                 if (photoUploadResult == null)
                     return Result<ProjectDto>.Failure("Creation Failed due to photo upload error.");

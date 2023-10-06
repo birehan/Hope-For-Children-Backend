@@ -3,8 +3,10 @@ using Application.Responses;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Application.Contracts.Infrastructure;
 using Application.Models;
+using Microsoft.Extensions.Configuration;
+using Application.Interfaces;
+
 
 namespace Application.Features.Accounts.CQRS.Commands
 {
@@ -16,12 +18,17 @@ namespace Application.Features.Accounts.CQRS.Commands
     public class ForgetPasswordSendEmailCommandHandler : IRequestHandler<ForgetPasswordSendEmailCommand, Result<string>>
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IEmailSender _emailSender; // Inject the IEmailSender interface
+        private readonly IEmailService _emailService; // Inject the IEmailSender interface
 
-        public ForgetPasswordSendEmailCommandHandler(UserManager<AppUser> userManager, IEmailSender emailSender)
+        private readonly IConfiguration _configuration; // Inject IConfiguration
+
+
+        public ForgetPasswordSendEmailCommandHandler(UserManager<AppUser> userManager, IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _configuration = configuration;
+            _emailService = emailService
+            ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public async Task<Result<string>> Handle(ForgetPasswordSendEmailCommand request, CancellationToken cancellationToken)
@@ -33,30 +40,17 @@ namespace Application.Features.Accounts.CQRS.Commands
                 return Result<string>.Failure("User does not exist!");
             }
 
-            // Generate password reset token
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            // var token = await _userManager.GeneratePasswordResetTokenAsync(user, "Default");
+
+            var clientUrl = _configuration["ClientUrl"];
+            var resetUrl = $"{clientUrl}/resetpassword?userId={user.Id}&token={token}";
 
 
-            // Create the password reset URL
-            var resetUrl = "https://example.com/resetpassword?userId=" + user.Id + "&token=" + token;
 
-            // Compose the email
-            var email = new Email
-            {
-                To = user.Email,
-                Subject = "Password Reset",
-                Body = $"Please reset your password by clicking the following link: {resetUrl}"
-            };
-
-            var isEmailSent = await _emailSender.SendEmail(email);
-
-            if (!isEmailSent)
-            {
-                return Result<string>.Failure("Failed to send password reset email!");
-            }
-
-            return Result<string>.Success("Password reset email sent successfully!");
+            EmailMetadata emailMetadata = new(user.Email,
+              "Reset Password",
+               $"Please reset your password by clicking the following link: {resetUrl}");
+            return await _emailService.Send(emailMetadata);
         }
     }
 }

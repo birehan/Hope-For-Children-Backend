@@ -11,9 +11,9 @@ namespace HFC.Application.Features.Projects.DTOs.Validators
             Include(new IProjectDtoValidator());
             RuleFor(p => p.Id).NotNull().WithMessage("{PropertyName} must be present");
 
-            When(p => p.ImageFile != null, () =>
+            When(p => p.File != null, () =>
             {
-                RuleFor(p => p.ImageFile)
+                RuleFor(p => p.File)
                     .Must(BeAValidImage)
                     .WithMessage("{PropertyName} must be a valid image file.");
             });

@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using Application.Contracts.Infrastructure;
 using Application.Interfaces;
 using Application.Models;
 using Application.Responses;
@@ -53,8 +52,12 @@ namespace API.Extensions
             services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
 
 
-            services.Configure<EmailSettings>(config.GetSection("EmailSettings"));
-            services.AddTransient<IEmailSender, EmailSender>();
+            // services.Configure<OldEmailSettings>(config.GetSection("EmailSettings"));
+            // services.AddTransient<IEmailService, EmailService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+
+
 
             services.AddCors(options =>
             {
